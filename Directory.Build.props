@@ -1,0 +1,25 @@
+<Project>
+  <!--
+    注意：WinUI 3 的 XAML 编译器（Microsoft.UI.Xaml.Markup.Compiler）在项目路径
+    包含非 ASCII 字符（如中文目录名）时会崩溃（WMC9999）。
+    因此将中间/输出目录重定向到 ASCII 路径 I:\Local Project\VS\qf-build，
+    源码仍保留在当前（中文名）目录中，可正常构建与调试。
+  -->
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'QuickFilter.App'">
+    <BaseIntermediateOutputPath>I:\Local Project\VS\qf-build\app\obj\</BaseIntermediateOutputPath>
+    <OutputPath>I:\Local Project\VS\qf-build\app\bin\</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'QuickFilter.Core'">
+    <BaseIntermediateOutputPath>I:\Local Project\VS\qf-build\core\obj\</BaseIntermediateOutputPath>
+    <OutputPath>I:\Local Project\VS\qf-build\core\bin\</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'QuickFilter.Core.Tests'">
+    <BaseIntermediateOutputPath>I:\Local Project\VS\qf-build\tests\obj\</BaseIntermediateOutputPath>
+    <OutputPath>I:\Local Project\VS\qf-build\tests\bin\</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+</Project>

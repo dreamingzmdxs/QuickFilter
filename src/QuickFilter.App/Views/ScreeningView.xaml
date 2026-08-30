@@ -1,0 +1,109 @@
+<UserControl
+    x:Class="QuickFilter.App.Views.ScreeningView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    IsTabStop="True"
+    KeyDown="Root_KeyDown">
+
+    <Grid x:Name="Root" Background="#FF161616">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- 顶部信息栏 -->
+        <Grid Grid.Row="0" Padding="16,10,16,6" ColumnSpacing="16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" Spacing="16">
+                <TextBlock x:Name="FileNameText" Foreground="White" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" />
+                <TextBlock x:Name="InfoText" Foreground="#AAFFFFFF" VerticalAlignment="Center" />
+                <TextBlock x:Name="ServerStatusText" Foreground="#FF6BC96B" FontSize="12" VerticalAlignment="Center" TextWrapping="Wrap" />
+            </StackPanel>
+            <TextBlock x:Name="CountsText" Grid.Column="1" Foreground="#AAFFFFFF" VerticalAlignment="Center" />
+        </Grid>
+
+        <ProgressBar x:Name="ProgressBar" Grid.Row="1" Margin="16,0,16,8" Height="4" Foreground="#FF4CC2FF" />
+
+        <!-- 图片区（手势捕获 + 滚轮缩放 + 双击复位） -->
+        <Grid x:Name="ImageHost" Grid.Row="2" Background="#FF0F0F0F"
+              PointerPressed="ImageHost_PointerPressed"
+              PointerMoved="ImageHost_PointerMoved"
+              PointerReleased="ImageHost_PointerReleased"
+              PointerCaptureLost="ImageHost_PointerCaptureLost"
+              PointerWheelChanged="ImageHost_PointerWheelChanged"
+              DoubleTapped="ImageHost_DoubleTapped">
+            <Grid x:Name="ZoomPane" RenderTransformOrigin="0.5,0.5">
+                <Image x:Name="MainImage" Stretch="Uniform" />
+
+            <!-- 隐私模式遮挡 -->
+            <StackPanel x:Name="PrivacyPanel" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10">
+                <TextBlock Text="🔒" FontSize="64" HorizontalAlignment="Center" />
+                <TextBlock Text="隐私模式：电脑端不显示图片（手机遥控不受影响）" Foreground="#99FFFFFF" FontSize="15" />
+            </StackPanel>
+
+            <!-- 隐私模式：操作记录 -->
+            <Border x:Name="LogPanel" Visibility="Collapsed" Background="#66000000" CornerRadius="10"
+                    Margin="24,12" Padding="16,10" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" MaxHeight="260">
+                <ListView x:Name="LogList" IsItemClickEnabled="False" SelectionMode="None" ScrollViewer.VerticalScrollBarVisibility="Auto" />
+            </Border>
+                <Grid.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform x:Name="ZoomScale" ScaleX="1" ScaleY="1" />
+                        <TranslateTransform x:Name="ZoomPan" />
+                    </TransformGroup>
+                </Grid.RenderTransform>
+            </Grid>
+
+            <Border x:Name="DragHint" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Background="#66000000" CornerRadius="14" Padding="28,14">
+                <TextBlock x:Name="DragHintText" Foreground="White" FontSize="34" FontWeight="Bold" />
+            </Border>
+
+            <Border x:Name="ZoomBadge" Visibility="Collapsed" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,12,12,0"
+                    Background="#66000000" CornerRadius="10" Padding="12,6">
+                <TextBlock x:Name="ZoomBadgeText" Foreground="White" FontSize="14" />
+            </Border>
+        </Grid>
+
+        <!-- 底部操作栏 -->
+        <Grid Grid.Row="3" Padding="16,10" ColumnSpacing="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock x:Name="HintText" Foreground="#88FFFFFF" VerticalAlignment="Center"
+                       Text="拖拽或按键：←/A 左　→/D 右　↑/W 删除　↓/S 跳过　Ctrl+Z 撤销　+/− 缩放" />
+
+            <Button x:Name="BtnZoomOut" Grid.Column="1" Content="－" Click="BtnZoomOut_Click" MinWidth="40" ToolTipService.ToolTip="缩小（- / 小键盘 -）" />
+            <Button x:Name="BtnZoomIn" Grid.Column="2" Content="＋" Click="BtnZoomIn_Click" MinWidth="40" ToolTipService.ToolTip="放大（+ / 小键盘 +）" />
+            <Button x:Name="BtnZoomReset" Grid.Column="3" Content="1:1" Click="BtnZoomReset_Click" MinWidth="44" ToolTipService.ToolTip="真实 1:1（1 图像像素 = 1 屏幕像素）" />
+            <Button x:Name="BtnFit" Grid.Column="4" Content="适应" Click="BtnFit_Click" MinWidth="44" ToolTipService.ToolTip="适应窗口（双击图片或 Esc 也行）" />
+            <Button x:Name="BtnLeft" Grid.Column="5" Content="◀ 左" Click="BtnLeft_Click" MinWidth="72" />
+            <Button x:Name="BtnRight" Grid.Column="6" Content="右 ▶" Click="BtnRight_Click" MinWidth="72" />
+            <Button x:Name="BtnDelete" Grid.Column="7" Content="删除 ↑" Click="BtnDelete_Click" MinWidth="72" />
+            <Button x:Name="BtnSkip" Grid.Column="8" Content="跳过 ↓" Click="BtnSkip_Click" MinWidth="72" />
+            <Button x:Name="BtnUndo" Grid.Column="9" Content="撤销" Click="BtnUndo_Click" MinWidth="72" />
+            <Button x:Name="BtnExport" Grid.Column="10" Content="导出 CSV" Click="BtnExport_Click" />
+            <Button x:Name="BtnStop" Grid.Column="11" Content="结束会话" Click="BtnStop_Click" />
+        </Grid>
+
+        <InfoBar x:Name="MessageBar" Grid.Row="4" IsClosable="True" Margin="16,0,16,8" />
+    </Grid>
+</UserControl>

@@ -1,0 +1,22 @@
+# 凭据与本地配置
+key.txt
+*.key
+*.pem
+local.properties
+
+# 构建产物
+dist/
+qf-build/
+**/bin/
+**/obj/
+build/
+.gradle/
+*.apk
+*.keystore
+
+# 生成的测试数据（可用 scripts\生成万张测试图片.ps1 重新生成）
+示例大集合/
+
+# 系统文件
+Thumbs.db
+Desktop.ini
